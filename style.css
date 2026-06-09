@@ -1,15 +1,4 @@
 :root {
-    --bg: #f0f7ff;
-    --card-bg: white;
-    --text: #1e2a3a;
-    --border: #cbd5e1;
-    --i-color: #2b6cb0;
-    --na-color: #c2410c;
-    --na-highlight-bg: #ffe5e5;
-    --tab-inactive: #e2e8f0;
-    --footer-bg: #e2e8f0;
-}
-body.dark {
     --bg: #0f172a;
     --card-bg: #1e293b;
     --text: #e2e8f0;
@@ -20,9 +9,24 @@ body.dark {
     --tab-inactive: #334155;
     --footer-bg: #0f172a;
 }
+
+/* ライトモード用（ダークがデフォルトなので、ライトモード時に上書き） */
+body.light {
+    --bg: #f0f7ff;
+    --card-bg: white;
+    --text: #1e2a3a;
+    --border: #cbd5e1;
+    --i-color: #2b6cb0;
+    --na-color: #c2410c;
+    --na-highlight-bg: #ffe5e5;
+    --tab-inactive: #e2e8f0;
+    --footer-bg: #e2e8f0;
+}
+
 * {
     transition: background 0.2s, color 0.2s;
 }
+
 body {
     background: var(--bg);
     font-family: 'Segoe UI', 'Noto Sans JP', sans-serif;
@@ -30,10 +34,12 @@ body {
     padding: 20px;
     color: var(--text);
 }
+
 .app-container {
     max-width: 900px;
     margin: 0 auto;
 }
+
 header {
     display: flex;
     justify-content: space-between;
@@ -42,10 +48,12 @@ header {
     gap: 12px;
     margin-bottom: 8px;
 }
+
 .header-buttons {
     display: flex;
     gap: 8px;
 }
+
 .lang-toggle, .dark-toggle {
     background: var(--card-bg);
     border: 1px solid var(--border);
@@ -53,13 +61,16 @@ header {
     border-radius: 40px;
     cursor: pointer;
     font-size: 0.85rem;
+    color: var(--text);
 }
+
 .tabs {
     display: flex;
     gap: 8px;
     margin: 20px 0 10px;
     flex-wrap: wrap;
 }
+
 .tab-btn {
     background: var(--tab-inactive);
     border: none;
@@ -67,17 +78,22 @@ header {
     border-radius: 40px;
     cursor: pointer;
     font-weight: bold;
+    color: var(--text);
 }
+
 .tab-btn.active {
     background: var(--i-color);
     color: white;
 }
+
 .tab-content {
     display: none;
 }
+
 .tab-content.active {
     display: block;
 }
+
 .card {
     background: var(--card-bg);
     border-radius: 28px;
@@ -85,17 +101,29 @@ header {
     margin-top: 10px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
+
 table {
     width: 100%;
     border-collapse: collapse;
 }
+
 td, th {
     padding: 12px 8px;
     border-bottom: 1px solid var(--border);
     text-align: left;
+    color: var(--text);
 }
-.i-example { color: var(--i-color); font-weight: bold; }
-.na-example { color: var(--na-color); font-weight: bold; }
+
+.i-example { 
+    color: var(--i-color); 
+    font-weight: bold; 
+}
+
+.na-example { 
+    color: var(--na-color); 
+    font-weight: bold; 
+}
+
 .na-highlight {
     background: var(--na-highlight-bg);
     color: #d32f2f;
@@ -103,10 +131,12 @@ td, th {
     padding: 2px 6px;
     border-radius: 16px;
 }
+
 .remove-na {
     text-decoration: line-through;
     text-decoration-color: red;
 }
+
 .example-sound {
     cursor: pointer;
     display: inline-block;
@@ -115,18 +145,22 @@ td, th {
     background: var(--tab-inactive);
     border-radius: 32px;
     font-size: 0.9rem;
+    color: var(--text);
 }
+
 .exception-note {
     margin-top: 20px;
-    background: #fff3cd;
+    background: #2d2a1e;
     padding: 10px;
     border-radius: 16px;
-    color: #856404;
-}
-body.dark .exception-note {
-    background: #2d2a1e;
     color: #ffd966;
 }
+
+body.light .exception-note {
+    background: #fff3cd;
+    color: #856404;
+}
+
 #quizAnswer {
     padding: 10px;
     width: 80%;
@@ -136,6 +170,7 @@ body.dark .exception-note {
     background: var(--card-bg);
     color: var(--text);
 }
+
 button {
     background: var(--i-color);
     color: white;
@@ -145,6 +180,7 @@ button {
     cursor: pointer;
     margin: 4px;
 }
+
 footer {
     margin-top: 32px;
     padding: 20px 16px;
@@ -153,6 +189,7 @@ footer {
     border-radius: 24px;
     font-size: 0.85rem;
 }
+
 footer a {
     color: var(--i-color);
     text-decoration: none;
@@ -160,6 +197,7 @@ footer a {
     display: inline-block;
     margin: 6px 0;
 }
+
 footer a:hover {
     text-decoration: underline;
 }
