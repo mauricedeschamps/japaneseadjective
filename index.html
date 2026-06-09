@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Japanese Adjective Builder - 形容詞マスター</title>
+    <title>Japanese Adjective Master</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     
@@ -25,35 +25,40 @@
 <body>
 <div class="app-container" id="app">
     <header>
-        <h1 id="appTitle">📖 形容詞マスター</h1>
+        <h1 id="appTitle">📖 Japanese Adjective Master</h1>
         <div class="header-buttons">
-            <button id="langToggle" class="lang-toggle">🇺🇸 English</button>
-            <button id="darkModeToggle" class="dark-toggle">🌙 ダーク</button>
+            <button id="langToggle" class="lang-toggle">🇯🇵 日本語</button>
+            <button id="darkModeToggle" class="dark-toggle">☀️ ライト</button>
         </div>
     </header>
-    <p id="subText" class="sub">名詞を修飾するとき・述語「です」の形を比較</p>
+    <p id="subText" class="sub">Compare modifying nouns & predicate form with 'desu'</p>
 
     <!-- タブ切り替え -->
     <div class="tabs">
-        <button class="tab-btn active" data-tab="modify" id="tabModify">✏️ 修飾＋名詞</button>
-        <button class="tab-btn" data-tab="predicate" id="tabPredicate">🔵 述語 ＋です</button>
-        <button class="tab-btn" data-tab="quiz" id="tabQuiz">📝 練習問題</button>
+        <button class="tab-btn active" data-tab="modify" id="tabModify">✏️ Modify + Noun</button>
+        <button class="tab-btn" data-tab="predicate" id="tabPredicate">🔵 Predicate + desu</button>
+        <button class="tab-btn" data-tab="quiz" id="tabQuiz">📝 Quiz</button>
     </div>
 
     <!-- 修飾タブ -->
     <div id="modifyTab" class="tab-content active">
         <div class="card">
             <div class="rule-box" id="modifyRule">
-                💡 ルール：<br>
-                <span class="i-example">イ形容詞</span> → そのまま ＋ 名詞<br>
-                <span class="na-example">ナ形容詞</span> → 語幹 + <span class="na-highlight">「な」</span> ＋ 名詞
+                💡 Rules:<br>
+                <span class="i-example">i-adjective</span> → directly + noun<br>
+                <span class="na-example">na-adjective</span> → stem + <span class="na-highlight">'na'</span> + noun
             </div>
             <table id="modifyTable">
-                <thead><tr><th id="modifyTypeHeader">種類</th><th id="modifyExampleHeader">例（タップで音声）</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th id="modifyTypeHeader">Type</th>
+                        <th id="modifyExampleHeader">Examples (tap to hear)</th>
+                    </tr>
+                </thead>
                 <tbody></tbody>
             </table>
             <div class="exception-note" id="exceptionNote">
-                ⚠️ 例外：<strong>大きい／小さな／おかしな</strong> など連体詞は特別ルール（別途暗記）
+                ⚠️ Exceptions: <strong>ookii／chiisana／okashina</strong> etc. (special attributives - memorize separately)
             </div>
         </div>
     </div>
@@ -62,12 +67,17 @@
     <div id="predicateTab" class="tab-content">
         <div class="card">
             <div class="rule-box" id="predicateRule">
-                💡 「～は ＋ 形容詞＋です」<br>
-                <span class="i-example">イ形容詞</span> : そのまま ＋ です（例：おいしいです）<br>
-                <span class="na-example">ナ形容詞</span> : <span class="remove-na">「な」を取る</span> ＋ です（例：きれいです）
+                💡 'Subject wa + adjective + desu'<br>
+                <span class="i-example">i-adjective</span> : directly + desu (ex: oishii desu)<br>
+                <span class="na-example">na-adjective</span> : remove <span class="remove-na">'na'</span> + desu (ex: kirei desu)
             </div>
             <table id="predicateTable">
-                <thead><tr><th id="predicateTypeHeader">種類</th><th id="predicateExampleHeader">例（タップで音声）</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th id="predicateTypeHeader">Type</th>
+                        <th id="predicateExampleHeader">Examples (tap to hear)</th>
+                    </tr>
+                </thead>
                 <tbody></tbody>
             </table>
         </div>
@@ -76,12 +86,12 @@
     <!-- 練習問題タブ -->
     <div id="quizTab" class="tab-content">
         <div class="card">
-            <p id="quizInstruction">【穴埋め問題】 ( ) に適切な形を入れてください。</p>
+            <p id="quizInstruction">【Fill in the blank】 Enter the correct form in ( ).</p>
             <div id="quizArea">
                 <p id="quizQuestion"></p>
-                <input type="text" id="quizAnswer" placeholder="" data-placeholder-ja="答えを入力" data-placeholder-en="Enter answer">
-                <button id="checkBtn">✓ チェック</button>
-                <button id="nextQuizBtn" id="nextQuiz">次の問題 →</button>
+                <input type="text" id="quizAnswer" placeholder="Enter answer">
+                <button id="checkBtn">✓ Check</button>
+                <button id="nextQuizBtn">Next →</button>
                 <p id="quizFeedback"></p>
             </div>
         </div>
@@ -91,7 +101,7 @@
     <footer>
         <p id="contactText">Contact us</p>
         <a href="mailto:mementomorikatsu@gmail.com" id="contactEmail">mementomorikatsu@gmail.com</a>
-        <p id="footerNote">🎧 例文をタップすると音声が聞けます | ホーム画面に追加してアプリ化</p>
+        <p id="footerNote">🎧 Tap examples to hear pronunciation | Add to home screen</p>
     </footer>
 </div>
 <script src="script.js"></script>
