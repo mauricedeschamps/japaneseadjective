@@ -11,48 +11,48 @@
     <link rel="apple-touch-icon" href="icons/icon-192.png" sizes="192x192">
     <link rel="apple-touch-icon" href="icons/icon-512.png" sizes="512x512">
     
-    <!-- 汎用アイコン（Androidなど） -->
+    <!-- 汎用アイコン -->
     <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
     <link rel="shortcut icon" href="icons/icon-192.png">
     
-    <!-- iOS ステータスバー・テーマカラー -->
+    <!-- iOS 設定 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="形容詞マスター">
+    <meta name="apple-mobile-web-app-title" content="AdjMaster">
     <meta name="theme-color" content="#1e3a5f">
-    
-    <!-- iPhone X以降の画面対応 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 </head>
 <body>
 <div class="app-container" id="app">
     <header>
-        <h1>📖 形容詞マスター</h1>
-        <button id="darkModeToggle" class="dark-toggle">🌙 ダーク</button>
+        <h1 id="appTitle">📖 形容詞マスター</h1>
+        <div class="header-buttons">
+            <button id="langToggle" class="lang-toggle">🇺🇸 English</button>
+            <button id="darkModeToggle" class="dark-toggle">🌙 ダーク</button>
+        </div>
     </header>
-    <p class="sub">名詞を修飾するとき・述語「です」の形を比較</p>
+    <p id="subText" class="sub">名詞を修飾するとき・述語「です」の形を比較</p>
 
     <!-- タブ切り替え -->
     <div class="tabs">
-        <button class="tab-btn active" data-tab="modify">✏️ 修飾＋名詞</button>
-        <button class="tab-btn" data-tab="predicate">🔵 述語 ＋です</button>
-        <button class="tab-btn" data-tab="quiz">📝 練習問題</button>
+        <button class="tab-btn active" data-tab="modify" id="tabModify">✏️ 修飾＋名詞</button>
+        <button class="tab-btn" data-tab="predicate" id="tabPredicate">🔵 述語 ＋です</button>
+        <button class="tab-btn" data-tab="quiz" id="tabQuiz">📝 練習問題</button>
     </div>
 
     <!-- 修飾タブ -->
     <div id="modifyTab" class="tab-content active">
         <div class="card">
-            <div class="rule-box">
+            <div class="rule-box" id="modifyRule">
                 💡 ルール：<br>
                 <span class="i-example">イ形容詞</span> → そのまま ＋ 名詞<br>
                 <span class="na-example">ナ形容詞</span> → 語幹 + <span class="na-highlight">「な」</span> ＋ 名詞
             </div>
             <table id="modifyTable">
-                <thead><tr><th>種類</th><th>例（タップで音声）</th></tr></thead>
+                <thead><tr><th id="modifyTypeHeader">種類</th><th id="modifyExampleHeader">例（タップで音声）</th></tr></thead>
                 <tbody></tbody>
             </table>
-            <div class="exception-note">
+            <div class="exception-note" id="exceptionNote">
                 ⚠️ 例外：<strong>大きい／小さな／おかしな</strong> など連体詞は特別ルール（別途暗記）
             </div>
         </div>
@@ -61,13 +61,13 @@
     <!-- 述語タブ -->
     <div id="predicateTab" class="tab-content">
         <div class="card">
-            <div class="rule-box">
+            <div class="rule-box" id="predicateRule">
                 💡 「～は ＋ 形容詞＋です」<br>
                 <span class="i-example">イ形容詞</span> : そのまま ＋ です（例：おいしいです）<br>
                 <span class="na-example">ナ形容詞</span> : <span class="remove-na">「な」を取る</span> ＋ です（例：きれいです）
             </div>
             <table id="predicateTable">
-                <thead><tr><th>種類</th><th>例（タップで音声）</th></tr></thead>
+                <thead><tr><th id="predicateTypeHeader">種類</th><th id="predicateExampleHeader">例（タップで音声）</th></tr></thead>
                 <tbody></tbody>
             </table>
         </div>
@@ -76,19 +76,22 @@
     <!-- 練習問題タブ -->
     <div id="quizTab" class="tab-content">
         <div class="card">
-            <p>【穴埋め問題】 ( ) に適切な形を入れてください。</p>
+            <p id="quizInstruction">【穴埋め問題】 ( ) に適切な形を入れてください。</p>
             <div id="quizArea">
                 <p id="quizQuestion"></p>
-                <input type="text" id="quizAnswer" placeholder="答えを入力">
+                <input type="text" id="quizAnswer" placeholder="" data-placeholder-ja="答えを入力" data-placeholder-en="Enter answer">
                 <button id="checkBtn">✓ チェック</button>
-                <button id="nextQuizBtn">次の問題 →</button>
+                <button id="nextQuizBtn" id="nextQuiz">次の問題 →</button>
                 <p id="quizFeedback"></p>
             </div>
         </div>
     </div>
 
+    <!-- フッター -->
     <footer>
-        🎧 例文をタップすると音声が聞けます | ホーム画面に追加してアプリ化
+        <p id="contactText">Contact us</p>
+        <a href="mailto:mementomorikatsu@gmail.com" id="contactEmail">mementomorikatsu@gmail.com</a>
+        <p id="footerNote">🎧 例文をタップすると音声が聞けます | ホーム画面に追加してアプリ化</p>
     </footer>
 </div>
 <script src="script.js"></script>
