@@ -4,11 +4,13 @@ const iAdjModify = [
     { word: "たかい", noun: "ビル", meaning: "tall building" },
     { word: "あつい", noun: "コーヒー", meaning: "hot coffee" }
 ];
+
 const naAdjModify = [
     { stem: "きれい", noun: "部屋", meaning: "clean room" },
     { stem: "しずか", noun: "公園", meaning: "quiet park" },
     { stem: "べんり", noun: "アプリ", meaning: "convenient app" }
 ];
+
 const iPredicate = ["おいしいです", "たかいです", "あついです"];
 const naPredicate = ["きれいです", "しずかです", "べんりです"];
 
@@ -21,7 +23,8 @@ const quizBank = [
     { q_ja: "たかい (  ) ビル", q_en: "takai (  ) biru", correct: "" }
 ];
 
-let currentLang = 'ja'; // 'ja' or 'en'
+// ==================== 初期設定（英語・ダークがデフォルト） ====================
+let currentLang = 'en';
 let currentQuiz = null;
 
 // ==================== 翻訳テキスト ====================
@@ -107,28 +110,40 @@ function updateLanguage() {
 // ==================== 表の描画 ====================
 function buildModifyTable() {
     const tbody = document.querySelector("#modifyTable tbody");
+    if (!tbody) return;
+    
     const iLabel = currentLang === 'ja' ? 'イ形容詞' : 'i-adjective';
     const naLabel = currentLang === 'ja' ? 'ナ形容詞' : 'na-adjective';
     
     tbody.innerHTML = `
-        <tr><td style="background:#e6f7ff">${iLabel}</td>
-        <td>${iAdjModify.map(i => `<div class="example-sound" data-text="${i.word} ${i.noun}">${i.word} ${i.noun}</div>`).join('')}</td></tr>
-        <tr><td style="background:#fff5e6">${naLabel}</td>
-        <td>${naAdjModify.map(n => `<div class="example-sound" data-text="${n.stem}な ${n.noun}"><span class="na-highlight">${n.stem}な</span> ${n.noun}</div>`).join('')}</td></tr>
+        <tr style="background:rgba(43,108,176,0.1)">
+            <td>${iLabel}</td>
+            <td>${iAdjModify.map(i => `<div class="example-sound" data-text="${i.word} ${i.noun}">${i.word} ${i.noun}</div>`).join('')}</td>
+        </tr>
+        <tr style="background:rgba(194,65,12,0.1)">
+            <td>${naLabel}</td>
+            <td>${naAdjModify.map(n => `<div class="example-sound" data-text="${n.stem}な ${n.noun}"><span class="na-highlight">${n.stem}な</span> ${n.noun}</div>`).join('')}</td>
+        </tr>
     `;
     attachSounds();
 }
 
 function buildPredicateTable() {
     const tbody = document.querySelector("#predicateTable tbody");
+    if (!tbody) return;
+    
     const iLabel = currentLang === 'ja' ? 'イ形容詞' : 'i-adjective';
     const naLabel = currentLang === 'ja' ? 'ナ形容詞' : 'na-adjective';
     
     tbody.innerHTML = `
-        <tr><td style="background:#e6f7ff">${iLabel}</td>
-        <td>${iPredicate.map(p => `<div class="example-sound" data-text="${p}">${p}</div>`).join('')}</td></tr>
-        <tr><td style="background:#fff5e6">${naLabel}</td>
-        <td>${naPredicate.map(p => `<div class="example-sound" data-text="${p}">${p}</div>`).join('')}</td></tr>
+        <tr style="background:rgba(43,108,176,0.1)">
+            <td>${iLabel}</td>
+            <td>${iPredicate.map(p => `<div class="example-sound" data-text="${p}">${p}</div>`).join('')}</td>
+        </tr>
+        <tr style="background:rgba(194,65,12,0.1)">
+            <td>${naLabel}</td>
+            <td>${naPredicate.map(p => `<div class="example-sound" data-text="${p}">${p}</div>`).join('')}</td>
+        </tr>
     `;
     attachSounds();
 }
@@ -191,18 +206,23 @@ function initTabs() {
     });
 }
 
-// ==================== ダークモード ====================
+// ==================== ダークモード（デフォルトON） ====================
 function darkMode() {
     const toggle = document.getElementById("darkModeToggle");
+    // デフォルトでダークモードを有効にする（bodyにdarkクラスは付けない。lightクラスがない状態がダーク）
+    toggle.textContent = "☀️ ライト";
+    
     toggle.addEventListener("click", () => {
-        document.body.classList.toggle("dark");
-        toggle.textContent = document.body.classList.contains("dark") ? "☀️ ライト" : "🌙 ダーク";
+        document.body.classList.toggle("light");
+        toggle.textContent = document.body.classList.contains("light") ? "🌙 ダーク" : "☀️ ライト";
     });
 }
 
-// ==================== 言語切り替えボタン ====================
+// ==================== 言語切り替えボタン（デフォルト英語表示） ====================
 function langToggle() {
     const btn = document.getElementById("langToggle");
+    btn.textContent = currentLang === 'ja' ? '🇺🇸 English' : '🇯🇵 日本語';
+    
     btn.addEventListener("click", () => {
         currentLang = currentLang === 'ja' ? 'en' : 'ja';
         btn.textContent = currentLang === 'ja' ? '🇺🇸 English' : '🇯🇵 日本語';
@@ -212,7 +232,7 @@ function langToggle() {
 
 // ==================== Service Worker ====================
 if('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').then(reg => console.log("SW registered", reg));
+    navigator.serviceWorker.register('sw.js').then(reg => console.log("SW registered", reg)).catch(err => console.log("SW error:", err));
 }
 
 // ==================== 初期化 ====================
@@ -221,7 +241,7 @@ buildPredicateTable();
 initTabs();
 darkMode();
 langToggle();
+updateLanguage();
 document.getElementById("checkBtn")?.addEventListener("click", checkQuiz);
 document.getElementById("nextQuizBtn")?.addEventListener("click", loadQuiz);
 loadQuiz();
-updateLanguage();
