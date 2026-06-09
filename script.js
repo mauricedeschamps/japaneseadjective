@@ -1,4 +1,4 @@
-// データ定義
+// ==================== データ定義 ====================
 const iAdjModify = [
     { word: "おいしい", noun: "料理", meaning: "delicious meal" },
     { word: "たかい", noun: "ビル", meaning: "tall building" },
@@ -12,21 +12,108 @@ const naAdjModify = [
 const iPredicate = ["おいしいです", "たかいです", "あついです"];
 const naPredicate = ["きれいです", "しずかです", "べんりです"];
 
-// 音声合成
-function speak(text) {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'ja-JP';
-    speechSynthesis.cancel();
-    speechSynthesis.speak(utterance);
+// 問題集
+const quizBank = [
+    { q_ja: "きれい (  ) 部屋", q_en: "kirei (  ) heya", correct: "な", hint: "ナ形容詞の修飾 / na-adjective modifier" },
+    { q_ja: "しずか (  ) 公園", q_en: "shizuka (  ) kouen", correct: "な" },
+    { q_ja: "おいしい (  ) 料理", q_en: "oishii (  ) ryouri", correct: "", note: "イ形容詞は不要 / i-adjective needs nothing" },
+    { q_ja: "べんり (  ) アプリ", q_en: "benri (  ) apuri", correct: "な" },
+    { q_ja: "たかい (  ) ビル", q_en: "takai (  ) biru", correct: "" }
+];
+
+let currentLang = 'ja'; // 'ja' or 'en'
+let currentQuiz = null;
+
+// ==================== 翻訳テキスト ====================
+const translations = {
+    ja: {
+        appTitle: "📖 形容詞マスター",
+        subText: "名詞を修飾するとき・述語「です」の形を比較",
+        tabModify: "✏️ 修飾＋名詞",
+        tabPredicate: "🔵 述語 ＋です",
+        tabQuiz: "📝 練習問題",
+        modifyRule: "💡 ルール：<br><span class='i-example'>イ形容詞</span> → そのまま ＋ 名詞<br><span class='na-example'>ナ形容詞</span> → 語幹 + <span class='na-highlight'>「な」</span> ＋ 名詞",
+        predicateRule: "💡 「～は ＋ 形容詞＋です」<br><span class='i-example'>イ形容詞</span> : そのまま ＋ です（例：おいしいです）<br><span class='na-example'>ナ形容詞</span> : <span class='remove-na'>「な」を取る</span> ＋ です（例：きれいです）",
+        modifyTypeHeader: "種類",
+        modifyExampleHeader: "例（タップで音声）",
+        predicateTypeHeader: "種類",
+        predicateExampleHeader: "例（タップで音声）",
+        exceptionNote: "⚠️ 例外：<strong>大きい／小さな／おかしな</strong> など連体詞は特別ルール（別途暗記）",
+        quizInstruction: "【穴埋め問題】 ( ) に適切な形を入れてください。",
+        quizPlaceholder: "答えを入力",
+        checkBtn: "✓ チェック",
+        nextBtn: "次の問題 →",
+        contactText: "Contact us",
+        footerNote: "🎧 例文をタップすると音声が聞けます | ホーム画面に追加してアプリ化",
+        correct: "✅ 正解！",
+        wrong: "❌ 不正解。正解は "
+    },
+    en: {
+        appTitle: "📖 Japanese Adjective Master",
+        subText: "Compare modifying nouns & predicate form with 'desu'",
+        tabModify: "✏️ Modify + Noun",
+        tabPredicate: "🔵 Predicate + desu",
+        tabQuiz: "📝 Quiz",
+        modifyRule: "💡 Rules:<br><span class='i-example'>i-adjective</span> → directly + noun<br><span class='na-example'>na-adjective</span> → stem + <span class='na-highlight'>'na'</span> + noun",
+        predicateRule: "💡 'Subject wa + adjective + desu'<br><span class='i-example'>i-adjective</span> : directly + desu (ex: oishii desu)<br><span class='na-example'>na-adjective</span> : remove <span class='remove-na'>'na'</span> + desu (ex: kirei desu)",
+        modifyTypeHeader: "Type",
+        modifyExampleHeader: "Examples (tap to hear)",
+        predicateTypeHeader: "Type",
+        predicateExampleHeader: "Examples (tap to hear)",
+        exceptionNote: "⚠️ Exceptions: <strong>ookii／chiisana／okashina</strong> etc. (special attributives - memorize separately)",
+        quizInstruction: "【Fill in the blank】 Enter the correct form in ( ).",
+        quizPlaceholder: "Enter answer",
+        checkBtn: "✓ Check",
+        nextBtn: "Next →",
+        contactText: "Contact us",
+        footerNote: "🎧 Tap examples to hear pronunciation | Add to home screen",
+        correct: "✅ Correct!",
+        wrong: "❌ Incorrect. Correct answer: "
+    }
+};
+
+// ==================== 言語切り替え ====================
+function updateLanguage() {
+    const t = translations[currentLang];
+    document.getElementById('appTitle').innerHTML = t.appTitle;
+    document.getElementById('subText').innerHTML = t.subText;
+    document.getElementById('tabModify').innerHTML = t.tabModify;
+    document.getElementById('tabPredicate').innerHTML = t.tabPredicate;
+    document.getElementById('tabQuiz').innerHTML = t.tabQuiz;
+    document.getElementById('modifyRule').innerHTML = t.modifyRule;
+    document.getElementById('predicateRule').innerHTML = t.predicateRule;
+    document.getElementById('modifyTypeHeader').innerHTML = t.modifyTypeHeader;
+    document.getElementById('modifyExampleHeader').innerHTML = t.modifyExampleHeader;
+    document.getElementById('predicateTypeHeader').innerHTML = t.predicateTypeHeader;
+    document.getElementById('predicateExampleHeader').innerHTML = t.predicateExampleHeader;
+    document.getElementById('exceptionNote').innerHTML = t.exceptionNote;
+    document.getElementById('quizInstruction').innerHTML = t.quizInstruction;
+    document.getElementById('checkBtn').innerHTML = t.checkBtn;
+    document.getElementById('nextQuizBtn').innerHTML = t.nextBtn;
+    document.getElementById('contactText').innerHTML = t.contactText;
+    document.getElementById('footerNote').innerHTML = t.footerNote;
+    
+    const quizInput = document.getElementById('quizAnswer');
+    quizInput.placeholder = t.quizPlaceholder;
+    
+    // 再描画
+    buildModifyTable();
+    buildPredicateTable();
+    if (document.getElementById('quizTab').classList.contains('active')) {
+        loadQuiz();
+    }
 }
 
-// 修飾表描画
+// ==================== 表の描画 ====================
 function buildModifyTable() {
     const tbody = document.querySelector("#modifyTable tbody");
+    const iLabel = currentLang === 'ja' ? 'イ形容詞' : 'i-adjective';
+    const naLabel = currentLang === 'ja' ? 'ナ形容詞' : 'na-adjective';
+    
     tbody.innerHTML = `
-        <tr><td style="background:#e6f7ff">イ形容詞</td>
+        <tr><td style="background:#e6f7ff">${iLabel}</td>
         <td>${iAdjModify.map(i => `<div class="example-sound" data-text="${i.word} ${i.noun}">${i.word} ${i.noun}</div>`).join('')}</td></tr>
-        <tr><td style="background:#fff5e6">ナ形容詞</td>
+        <tr><td style="background:#fff5e6">${naLabel}</td>
         <td>${naAdjModify.map(n => `<div class="example-sound" data-text="${n.stem}な ${n.noun}"><span class="na-highlight">${n.stem}な</span> ${n.noun}</div>`).join('')}</td></tr>
     `;
     attachSounds();
@@ -34,10 +121,13 @@ function buildModifyTable() {
 
 function buildPredicateTable() {
     const tbody = document.querySelector("#predicateTable tbody");
+    const iLabel = currentLang === 'ja' ? 'イ形容詞' : 'i-adjective';
+    const naLabel = currentLang === 'ja' ? 'ナ形容詞' : 'na-adjective';
+    
     tbody.innerHTML = `
-        <tr><td style="background:#e6f7ff">イ形容詞</td>
+        <tr><td style="background:#e6f7ff">${iLabel}</td>
         <td>${iPredicate.map(p => `<div class="example-sound" data-text="${p}">${p}</div>`).join('')}</td></tr>
-        <tr><td style="background:#fff5e6">ナ形容詞</td>
+        <tr><td style="background:#fff5e6">${naLabel}</td>
         <td>${naPredicate.map(p => `<div class="example-sound" data-text="${p}">${p}</div>`).join('')}</td></tr>
     `;
     attachSounds();
@@ -49,39 +139,45 @@ function attachSounds() {
         el.addEventListener('click', soundHandler);
     });
 }
+
 function soundHandler(e) {
     const text = e.currentTarget.getAttribute('data-text');
-    if(text) speak(text);
-}
-
-// 問題集（修飾＋な に特化）
-let currentQuiz = null;
-const quizBank = [
-    { q: "きれい (  ) 部屋", correct: "な", hint: "ナ形容詞の修飾" },
-    { q: "しずか (  ) 公園", correct: "な" },
-    { q: "おいしい (  ) 料理", correct: "", note: "イ形容詞は不要" },
-    { q: "べんり (  ) アプリ", correct: "な" },
-    { q: "たかい (  ) ビル", correct: "" }
-];
-function loadQuiz() {
-    const random = Math.floor(Math.random() * quizBank.length);
-    currentQuiz = quizBank[random];
-    document.getElementById("quizQuestion").innerHTML = currentQuiz.q;
-    document.getElementById("quizAnswer").value = "";
-    document.getElementById("quizFeedback").innerHTML = "";
-}
-function checkQuiz() {
-    const user = document.getElementById("quizAnswer").value.trim();
-    const isCorrect = (user === currentQuiz.correct) || (currentQuiz.correct === "" && user === "");
-    if(isCorrect) {
-        document.getElementById("quizFeedback").innerHTML = "✅ 正解！";
-    } else {
-        const expected = currentQuiz.correct === "" ? "（何も入れない）" : `「${currentQuiz.correct}」`;
-        document.getElementById("quizFeedback").innerHTML = `❌ 不正解。正解は ${expected} です。`;
+    if(text) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'ja-JP';
+        speechSynthesis.cancel();
+        speechSynthesis.speak(utterance);
     }
 }
 
-// タブ切り替え＆ダークモード
+// ==================== クイズ ====================
+function loadQuiz() {
+    const random = Math.floor(Math.random() * quizBank.length);
+    currentQuiz = quizBank[random];
+    const questionElem = document.getElementById("quizQuestion");
+    if (currentLang === 'ja') {
+        questionElem.innerHTML = currentQuiz.q_ja;
+    } else {
+        questionElem.innerHTML = currentQuiz.q_en;
+    }
+    document.getElementById("quizAnswer").value = "";
+    document.getElementById("quizFeedback").innerHTML = "";
+}
+
+function checkQuiz() {
+    const user = document.getElementById("quizAnswer").value.trim();
+    const isCorrect = (user === currentQuiz.correct) || (currentQuiz.correct === "" && user === "");
+    const t = translations[currentLang];
+    
+    if(isCorrect) {
+        document.getElementById("quizFeedback").innerHTML = t.correct;
+    } else {
+        const expected = currentQuiz.correct === "" ? (currentLang === 'ja' ? "（何も入れない）" : "(nothing)") : `「${currentQuiz.correct}」`;
+        document.getElementById("quizFeedback").innerHTML = `${t.wrong} ${expected} です。`;
+    }
+}
+
+// ==================== タブ切り替え ====================
 function initTabs() {
     document.querySelectorAll(".tab-btn").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -94,6 +190,8 @@ function initTabs() {
         });
     });
 }
+
+// ==================== ダークモード ====================
 function darkMode() {
     const toggle = document.getElementById("darkModeToggle");
     toggle.addEventListener("click", () => {
@@ -102,16 +200,28 @@ function darkMode() {
     });
 }
 
-// Service Worker 登録（PWA）
+// ==================== 言語切り替えボタン ====================
+function langToggle() {
+    const btn = document.getElementById("langToggle");
+    btn.addEventListener("click", () => {
+        currentLang = currentLang === 'ja' ? 'en' : 'ja';
+        btn.textContent = currentLang === 'ja' ? '🇺🇸 English' : '🇯🇵 日本語';
+        updateLanguage();
+    });
+}
+
+// ==================== Service Worker ====================
 if('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').then(reg => console.log("SW registered", reg));
 }
 
-// 初期化
+// ==================== 初期化 ====================
 buildModifyTable();
 buildPredicateTable();
 initTabs();
 darkMode();
+langToggle();
 document.getElementById("checkBtn")?.addEventListener("click", checkQuiz);
 document.getElementById("nextQuizBtn")?.addEventListener("click", loadQuiz);
 loadQuiz();
+updateLanguage();
